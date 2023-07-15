@@ -1,0 +1,31 @@
+<!-- This file will display the podcast grid based on the selected duration and category. -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <!-- Display podcast genres -->
+<h2>Podcast Genres</h2>
+<ul>
+  <% genres.forEach(genre => { %>
+    <li><%= genre %></li>
+  <% }); %>
+</ul>
+
+<!-- Display podcast data -->
+<h2>Podcasts</h2>
+<ul>
+  <% podcasts.forEach(podcast => { %>
+    <li>
+      <h3><%= podcast.title %></h3>
+      <p><%= podcast.description %></p>
+      <!-- Add more details as needed -->
+    </li>
+  <% }); %>
+</ul>
+
+  </body>
+</html>

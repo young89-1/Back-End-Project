@@ -37,4 +37,25 @@ try {
   }
 });
 
+
+
+// GET login page
+router.get('/login', function(req, res) {
+  res.render('login', { title: 'Login' });
+});
+
+// POST login user
+router.post('/login', function(req, res) {
+  const { username, password } = req.body;
+
+  // Insert authentication logic here
+  // Verify the username and password against the stored user data
+
+  // If authentication is successful, redirect to a "redirected" page that is temporarily called /redirect
+  // If authentication fails, show an error message or redirect to the login page
+
+  res.redirect('/redirect'); // this is the web address to be redirected to after logging in successfully
+});
+
+
 module.exports = router;

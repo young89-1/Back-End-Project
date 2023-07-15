@@ -1,20 +1,21 @@
 var express = require('express');
 var router = express.Router();
+const { fetchPodcastGenres } = require('./podcastService');
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const saltrounds =  10;
 const jwt = require("jsonwebtoken")
 
+
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// router.get('/', function(req, res, next) {
+//   res.send('respond with a resource');
+// });
 
 
-// GET register new user
+// GET register new user http://localhost:3000/users/register
 router.get('/register', function(req, res) {
   res.render('register', { title: 'Register a New User' });
-  // console.log(register)
 });
 
 
@@ -45,7 +46,10 @@ try {
   }
 });
 
+
+// GET login page http://localhost:3000/users/login
 // GET login page
+
 router.get('/login', function(req, res) {
   res.render('login', { title: 'Login' });
 });
@@ -54,7 +58,7 @@ router.get('/login', function(req, res) {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  // Insert authentication logic here
+  // Insert middleware/authentication logic here
   // Verify the username and password against the stored user data
   const user = await User.findOne({
     where: { username },
@@ -81,8 +85,47 @@ router.post('/login', async (req, res) => {
   // If authentication is successful, redirect to a "redirected" page that is temporarily called /redirect
   // If authentication fails, show an error message or redirect to the login page
 
-  res.redirect('/redirect'); // this is the web address to be redirected to after logging in successfully
+  res.redirect('/'); // this is the web address to be redirected to after logging in successfully
 });
 
+
+// GET watch list page
+router.get('/Profile', async (req, res) => {
+  try {
+    // Retrieve user's favorite's list from database
+    const favoritesList = await FavoritesList.findAll({ where: { userId: req.user.id } 
+    });
+  
+  res.render('Profile', { title: 'Favorites List', favoritesList });
+  } catch (error) {
+    console.error('Error retreiving Favorites List:', error);
+    res.status(500).send('An error occurred while retreiving the Favorites List.');
+  }
+});
+
+// GET home page
+router.get('/', async (req, res) => {
+  try {
+
+const { duration, genre } = req.query;
+
+
+
+    // Fetch podcast genres using the podcastService
+    const genres = await fetchPodcastGenres();
+
+    // Make the API request to fetch the podcast data
+    const podcasts = await fetchPodcastsFromAPI(duration, category);
+
+    // Retrieve the podcast data based on the selected duration and category
+    // const podcasts = await fetchPodcasts(req.query.duration, req.query.category);
+
+    res.render('home', { title: 'Home', genres, podcasts });
+    
+  } catch (error) {
+    console.error('Error retrieving podcasts:', error);
+    res.status(500).send('An error occurred while retrieving the podcasts.');
+  }
+});
 
 module.exports = router;

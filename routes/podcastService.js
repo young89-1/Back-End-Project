@@ -1,8 +1,8 @@
-const { Client } = require('podcast-api');
+//const { Client } = require('podcast-api');
 
 // Create a function to fetch podcast genres
 const fetchPodcastGenres = async () => {
-  const client = Client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd' });
+  const client = client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd' });
 
   try {
     const response = await client.fetchPodcastGenres({ top_level_only: 1 });

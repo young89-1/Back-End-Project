@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
-const { fetchPodcastGenres } = require('../public/stylesheets/podcastService');
+const { fetchPodcastGenres, fetchPodcast } = require('../public/stylesheets/podcastService');
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const saltrounds =  10;
 const jwt = require("jsonwebtoken")
 const { Client } = require('podcast-api');
-const client = Client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd'});
+require("dotenv").config();
+const api = process.env.APIKEY;
+const client = Client({ apiKey: api });
 const authCheck = require('../middleware/authCheck');
 
 
@@ -137,14 +139,16 @@ router.get('/Profile', authCheck, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
 
-const { duration, genre } = req.query;
+// const { duration, genre } = req.query;
 
     // Fetch podcast genres using the podcastService
-const response = await client.fetchPodcastGenres({ top_level_only: 1 });
-const genres = response.data.genres;
+const genres = await fetchPodcastGenres();
 
 
-res.render('home', { title: 'Home', genres });
+// const podcasts = await fetchPodcastsFromAPI(duration, genre);
+
+
+res.render('home', { title: 'Home', genres: genres });
 console.log(genres)
   
   } catch (error) {
@@ -152,5 +156,18 @@ console.log(genres)
     res.status(500).send('An error occurred while retrieving the podcasts.');
   }
 });
+
+router.get('/podcast', async (req, res) => {
+  try {
+  const podcasts = await fetchPodcast();
+const title = podcasts.title_original;
+console.log(podcasts)
+res.render('home', { title: title, podcasts: podcasts });
+
+} catch (error) {
+  console.error('Error retrieving podcasts:', error);
+  res.status(500).send('An error occurred while retrieving the podcasts.');
+}
+})
 
 module.exports = router;

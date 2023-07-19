@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const saltrounds =  10;
 const jwt = require("jsonwebtoken")
 const { Client } = require('podcast-api');
-const client = Client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd'});
+const client = Client({ apiKey: '9d921be3828b4e66a53c534d212173a0'});
 const authCheck = require('../middleware/authCheck');
 
 
@@ -77,7 +77,7 @@ router.post('/login', async (req, res) => {
         console.log(token);
 
         res.cookie("token", token);
-        res.redirect("/");
+        res.redirect("/profile");
       } else res.render("login", { title: "Login", error: "Passwords do not match" });
     });
   }

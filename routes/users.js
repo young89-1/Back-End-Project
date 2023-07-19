@@ -1,10 +1,12 @@
 var express = require('express');
 var router = express.Router();
-const { fetchPodcastGenres } = require('./podcastService');
+const { fetchPodcastGenres } = require('../public/stylesheets/podcastService');
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const saltrounds =  10;
 const jwt = require("jsonwebtoken")
+const { Client } = require('podcast-api');
+const client = Client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd'});
 const authCheck = require('../middleware/authCheck');
 
 
@@ -132,23 +134,19 @@ router.get('/Profile', authCheck, async (req, res) => {
   }
 });
 
-// GET home page
 router.get('/', async (req, res) => {
   try {
 
 const { duration, genre } = req.query;
 
     // Fetch podcast genres using the podcastService
-    const genres = await fetchPodcastGenres();
+const response = await client.fetchPodcastGenres({ top_level_only: 1 });
+const genres = response.data.genres;
 
-    // Make the API request to fetch the podcast data
-    const podcasts = await fetchPodcastsFromAPI(duration, category);
 
-    // Retrieve the podcast data based on the selected duration and category
-    // const podcasts = await fetchPodcasts(req.query.duration, req.query.category);
-
-    res.render('home', { title: 'Home', genres, podcasts });
-    
+res.render('home', { title: 'Home', genres });
+console.log(genres)
+  
   } catch (error) {
     console.error('Error retrieving podcasts:', error);
     res.status(500).send('An error occurred while retrieving the podcasts.');

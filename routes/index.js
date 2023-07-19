@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const middleware = require('../middleware/customMiddleware') 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

@@ -1,21 +1,40 @@
-<!-- This file will render the user's watch list. -->
-
 <!DOCTYPE html>
 <html>
   <head>
     <title><%= title %></title>
+    <!-- Include the Bootstrap partial -->
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
-    <h1>Login</h1>
-    <form action="/users/login" method="POST">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required />
-
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required />
-
-      <button type="submit">Login</button>
-    </form>
+    <div class="container">
+      <h1><%= title %></h1>
+      <div class="row">
+        <% users.forEach(user => { %>
+        <div class="col-md-4">
+          <a href="/users/profile/<%= user.dataValues.id %>" class="text-decoration-none">
+            <div class="card">
+              <img
+                src="<%= user.dataValues.image || 'https://placekitten.com/200/200' %>"
+                class="card-img-top"
+                alt="User Image"
+              />
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= user.dataValues.firstName %> <%= user.dataValues.lastName
+                  %>
+                </h5>
+                <p class="card-text">Email: <%= user.dataValues.email %></p>
+                <p class="card-text">
+                  Username: <%= user.dataValues.username %>
+                </p>
+                <button class="btn btn-primary" onclick="window.location.href = '/users/edit/<%= user.id %>';">Edit</button>
+                <button class="btn btn-primary" onclick="window.location.href = '/users/delete/<%= user.id %>';">Delete</button>
+              </div>
+            </div>
+          </a>
+        </div>
+        <% }); %>
+      </div>
+    </div>
   </body>
 </html>

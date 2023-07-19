@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <form action="/users/edit/<%= id %>" method="post">
+        <input type="hidden" name="_method" value="PATCH">
+        <label for="firstName">First Name:</label><br />
+        <input type="text" id="firstName" name="firstName" value="<%= firstName %>" /><br />
+        <label for="lastName">Last Name:</label><br />
+        <input type="text" id="lastName" name="lastName" value= "<%= lastName %>"/> <br />
+        <label for="email">Email:</label><br />
+        <input type="text" id="email" name="email" value= "<%= email %>" /><br />
+        <input type="submit" value="Submit" /><br />
+    </form>
+  </body>
+</html>

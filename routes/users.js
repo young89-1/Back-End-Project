@@ -7,18 +7,18 @@ const saltrounds =  10;
 const jwt = require("jsonwebtoken")
 const { Client } = require('podcast-api');
 const client = Client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd'});
+const authCheck = require('../middleware/authCheck');
+
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
 //   res.send('respond with a resource');
 // });
 
-
 // GET register new user http://localhost:3000/users/register
 router.get('/register', function(req, res) {
   res.render('register', { title: 'Register a New User' });
 });
-
 
 // POST register new user
 router.post('/register', async (req, res) => {
@@ -47,10 +47,8 @@ try {
   }
 });
 
-
 // GET login page http://localhost:3000/users/login
 // GET login page
-
 router.get('/login', function(req, res) {
   res.render('login', { title: 'Login' });
 });
@@ -73,7 +71,7 @@ router.post('/login', async (req, res) => {
       console.log(result);
 
       if (result) {
-        const token = jwt.sign({ foo: "bar" }, "superSecretPrivateKey", {
+        const token = jwt.sign({ foo: "bar" }, "secretToken", {
           expiresIn: "1h",
         });
         console.log(token);
@@ -84,14 +82,46 @@ router.post('/login', async (req, res) => {
     });
   }
   // If authentication is successful, redirect to a "redirected" page that is temporarily called /redirect
-  // If authentication fails, show an error message or redirect to the login page
-
-  res.redirect('/'); // this is the web address to be redirected to after logging in successfully
 });
 
+// GET EDIT user (load a template)
+router.get('/edit/:id', async (req, res) => {
+  const id = req.params.id;
+  const { firstName, lastName, email } = await User.findByPk(id);
+  console.log(firstName, lastName, email, id);
+  res.render("edit", { title: "Edit User", id, firstName, lastName, email });
+  });
+
+//PUT or PATCH edit a user
+router.post('/edit/:id', async (req, res) => {
+  const id = req.params.id;
+  const { firstName, lastName, email } = req.body;
+  await User.update({ firstName, lastName, email }, { where: { id: id } });
+  res.redirect(`/users/register`);
+});
+
+router.get("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const { firstName, lastName, email } = await User.findByPk(req.params.id);
+  console.log(firstName);
+  res.render("delete", {
+    title: "Delete this User",
+    id,
+    firstName,
+    lastName,
+    email,
+  });
+});
+
+router.post("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  await User.destroy({ where: { id: id } });
+  res.send("Patch request delete user");
+});
 
 // GET watch list page
-router.get('/Profile', async (req, res) => {
+router.get('/Profile', authCheck, async (req, res) => {
   try {
     // Retrieve user's favorite's list from database
     const favoritesList = await FavoritesList.findAll({ where: { userId: req.user.id } 
@@ -106,6 +136,9 @@ router.get('/Profile', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
+
+const { duration, genre } = req.query;
+
     // Fetch podcast genres using the podcastService
 const response = await client.fetchPodcastGenres({ top_level_only: 1 });
 const genres = response.data.genres;

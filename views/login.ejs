@@ -2,16 +2,17 @@
 <html>
   <head>
     <title><%= title %></title>
+    <% include partials/bootstrap.ejs %>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <h1>Login</h1>
     <form action="/users/login" method="POST">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required>
+      <label for="username" class="form-label">Username</label>
+      <input type="text" id="username" name="username" class="form-control" required>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
+      <label for="password" class="form-label">Password</label>
+      <input type="password" id="password" name="password" class="form-control" required>
 
       <button type="submit">Login</button>
     </form>

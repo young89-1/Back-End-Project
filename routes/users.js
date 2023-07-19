@@ -79,7 +79,7 @@ router.post('/login', async (req, res) => {
         console.log(token);
 
         res.cookie("token", token);
-        res.redirect("/");
+        res.redirect("/profile");
       } else res.render("login", { title: "Login", error: "Passwords do not match" });
     });
   }

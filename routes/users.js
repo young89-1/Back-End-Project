@@ -10,6 +10,7 @@ require("dotenv").config();
 const api = process.env.APIKEY;
 const client = Client({ apiKey: api });
 const authCheck = require('../middleware/authCheck');
+const session = require('express-session')
 
 
 /* GET users listing. */
@@ -79,7 +80,7 @@ router.post('/login', async (req, res) => {
         console.log(token);
 
         res.cookie("token", token);
-        res.redirect("/profile");
+        res.redirect("/users/profile");
       } else res.render("login", { title: "Login", error: "Passwords do not match" });
     });
   }
@@ -138,16 +139,7 @@ router.get('/Profile', authCheck, async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-
-// const { duration, genre } = req.query;
-
-    // Fetch podcast genres using the podcastService
 const genres = await fetchPodcastGenres();
-
-
-// const podcasts = await fetchPodcastsFromAPI(duration, genre);
-
-
 res.render('home', { title: 'Home', genres: genres });
 console.log(genres)
   
@@ -157,12 +149,15 @@ console.log(genres)
   }
 });
 
-router.get('/podcast', async (req, res) => {
+router.get('/podcast/:genreName/:genreId', async (req, res) => {
   try {
-  const podcasts = await fetchPodcast();
+const genreName = req.params.genreName;
+const genreId = req.params.genreId;
+console.log(genreId)
+const podcasts = await fetchPodcast(genreName, genreId);
 const title = podcasts.title_original;
-console.log(podcasts)
-res.render('home', { title: title, podcasts: podcasts });
+console.log(req.query)
+res.render('podcast', { title: title, podcasts: podcasts });
 
 } catch (error) {
   console.error('Error retrieving podcasts:', error);

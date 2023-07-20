@@ -11,22 +11,23 @@
     <% include partials/header.ejs %>
     <h1><%= title %></h1>
     <div class="row">
-      <% if (podcasts) { %>
-        <% podcasts.forEach(podcast => { %>
+      <% if (genres && genres.length > 0) { %>
+        <% genres.forEach(genre => { %>
           <div class="col-md-4">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title"><%= podcast.title_original %></h5>
+                <button onclick="redirectToPodcastPage('<%= genre.name %>', '<%= genre.id %>')"><%= genre.name %></button>
               </div>
             </div>
           </div>
         <% }) %>
-      <% } else if (genres) { %>
-        <% genres.forEach(genre => { %>
-          <p><%= genre.name %></p>
-        <% }) %>
       <% } %>
     </div>
   </div>
+  <script>
+    function redirectToPodcastPage(genreName, genreId) {
+    window.location.href = 'podcast/' + encodeURIComponent(genreName) + '/' + encodeURIComponent(genreId);
+      }
+    </script>
 </body>
 </html>

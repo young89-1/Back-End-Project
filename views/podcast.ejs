@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <!-- Include the Bootstrap partial -->
+  <% include partials/bootstrap.ejs %>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body>
+  <div class="container">
+    <% include partials/header.ejs %>
+    <h1><%= title %></h1>
+    <div class="row">
+      <% if (podcasts) { %>
+        <% podcasts.forEach(podcast => { %>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"><%= podcast.title_original %></h5>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

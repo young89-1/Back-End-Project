@@ -8,25 +8,19 @@ const fetchPodcastGenres = async () => {
 
   try {
     const response = await client.fetchPodcastGenres({ top_level_only: 1 });
-    return response.data; // Return the genre data
+    return response.data.genres; // Return the genre data
   } catch (error) {
     console.error('Error fetching podcast genres:', error);
     throw error; // Rethrow the error to be handled by the caller
   }
 };
 
-// Create a function to fetch podcasts based on selected genre
-
-// If apiKey is null, then we will connect to a mock server
-// that returns fake data for testing purposes.
-  
-
-const fetchPodcast = async () => {
+const fetchPodcast = async (title, genre) => {
   try {
     const client = Client({ apiKey: api });
     const response = await client.search({
-      q: 'sports',
-      genre_ids: '77',
+      q: {title},
+      genre_ids: {genre},
       language: 'English',
     });
     return(response.data.results);

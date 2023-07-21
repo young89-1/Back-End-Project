@@ -141,7 +141,6 @@ router.get('/', async (req, res) => {
   try {
 const genres = await fetchPodcastGenres();
 res.render('home', { title: 'Home', genres: genres });
-console.log(genres)
   
   } catch (error) {
     console.error('Error retrieving podcasts:', error);
@@ -153,16 +152,15 @@ router.get('/podcast/:genreName/:genreId', async (req, res) => {
   try {
 const genreName = req.params.genreName;
 const genreId = req.params.genreId;
-console.log(genreId)
 const podcasts = await fetchPodcast(genreName, genreId);
 const title = podcasts.title_original;
-console.log(req.query)
+// const image = podcasts.image;
 res.render('podcast', { title: title, podcasts: podcasts });
 
 } catch (error) {
   console.error('Error retrieving podcasts:', error);
   res.status(500).send('An error occurred while retrieving the podcasts.');
 }
-})
+});
 
 module.exports = router;

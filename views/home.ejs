@@ -6,17 +6,17 @@
   <% include partials/bootstrap.ejs %>
   <link rel="stylesheet" href="/stylesheets/style.css" />
 </head>
-<body>
-  <div class="container">
+<body class="bg-light">
+  <div class="container text-center">
     <% include partials/header.ejs %>
-    <h1><%= title %></h1>
+    <h2 class="text-center mt-5"><%= title %></h2>
     <div class="row">
       <% if (genres && genres.length > 0) { %>
         <% genres.forEach(genre => { %>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <button onclick="redirectToPodcastPage('<%= genre.name %>', '<%= genre.id %>')"><%= genre.name %></button>
+          <div class="col-md-2">
+            <div>
+              <div>
+                <button class="btn btn-secondary m-2" onclick="redirectToPodcastPage('<%= genre.name %>', '<%= genre.id %>')"><%= genre.name %></button>
               </div>
             </div>
           </div>
@@ -26,7 +26,7 @@
   </div>
   <script>
     function redirectToPodcastPage(genreName, genreId) {
-    window.location.href = 'podcast/' + encodeURIComponent(genreName) + '/' + encodeURIComponent(genreId);
+    window.location.href = '/users/podcast/' + encodeURIComponent(genreName) + '/' + encodeURIComponent(genreId);
       }
     </script>
 </body>

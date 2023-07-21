@@ -15,8 +15,14 @@
         <% podcasts.forEach(podcast => { %>
           <div class="col-md-4">
             <div class="card">
+
               <div class="card-body">
                 <h5 class="card-title"><%= podcast.title_original %></h5>
+                <img src=<%= podcast.image %>>
+                <audio controls>
+                  <source src=<%= podcast.audio %> />
+                </audio>            
+                <button class="btn btn-primary">Add to Favorites</button>
               </div>
             </div>
           </div>

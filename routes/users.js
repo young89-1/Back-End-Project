@@ -20,7 +20,7 @@ const session = require('express-session')
 
 // GET register new user http://localhost:3000/users/register
 router.get('/register', function(req, res) {
-  res.render('register', { title: 'Register a New User' });
+  res.render('register', { title: 'Create Your Account' });
 });
 
 // POST register new user
@@ -109,7 +109,7 @@ router.get("/delete/:id", async (req, res) => {
   const { firstName, lastName, email } = await User.findByPk(req.params.id);
   console.log(firstName);
   res.render("delete", {
-    title: "Delete this User",
+    title: "Delete User",
     id,
     firstName,
     lastName,
@@ -127,7 +127,7 @@ router.post("/delete/:id", async (req, res) => {
 router.get('/Profile', authCheck, async (req, res) => {
   try {
     // Retrieve user's favorite's list from database
-    const favoritesList = await FavoritesList.findAll({ where: { userId: req.user.id } 
+    const favoritesList = await favorites.findAll({ where: { user_id: user_id } 
     });
   
   res.render('Profile', { title: 'Favorites List', favoritesList });
@@ -140,7 +140,8 @@ router.get('/Profile', authCheck, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
 const genres = await fetchPodcastGenres();
-res.render('home', { title: 'Home', genres: genres });
+
+res.render('home', { title: 'Pick a Genre', genres: genres });
   
   } catch (error) {
     console.error('Error retrieving podcasts:', error);
@@ -152,9 +153,10 @@ router.get('/podcast/:genreName/:genreId', async (req, res) => {
   try {
 const genreName = req.params.genreName;
 const genreId = req.params.genreId;
+
 const podcasts = await fetchPodcast(genreName, genreId);
 const title = podcasts.title_original;
-// const image = podcasts.image;
+
 res.render('podcast', { title: title, podcasts: podcasts });
 
 } catch (error) {
@@ -162,5 +164,6 @@ res.render('podcast', { title: title, podcasts: podcasts });
   res.status(500).send('An error occurred while retrieving the podcasts.');
 }
 });
+
 
 module.exports = router;

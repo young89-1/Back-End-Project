@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <% include partials/header.ejs %>
     <title><%= title %></title>
     <% include partials/bootstrap.ejs %>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-  <body>
-    <h1>Login</h1>
+  <body class="bg-light">
+    <h2>Login</h2>
     <form action="/users/login" method="POST">
       <label for="username" class="form-label">Username</label>
       <input type="text" id="username" name="username" class="form-control" required>

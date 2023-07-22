@@ -16,6 +16,10 @@ const authCheck = require("../middleware/authCheck");
 const session = require("express-session");
 const sequelize = require("../config/database");
 
+// const passport = require("passport");
+
+
+
 router.get("/register", function (req, res) {
   res.render("register", { title: "Create Your Account" });
 });

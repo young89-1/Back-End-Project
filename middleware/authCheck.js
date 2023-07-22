@@ -15,7 +15,7 @@ const authCheck = (req, res, next) => {
     if (decoded) {
       next();
     } else {
-      res.redirect('/')
+      res.redirect('/users/login')
       };
     };
 

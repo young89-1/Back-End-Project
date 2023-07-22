@@ -21,7 +21,8 @@
                 <audio controls>
                   <source src=<%= podcast.audio %> />
                 </audio>
-                <button class="btn btn-danger" onclick=favorites.create()>Add to Favorites</button>
+                <!-- Add the "Add to Favorites" button with an onclick event -->
+                <button class="btn btn-danger" onclick="addToFavorites('<%= podcast.id %>')">Add to Favorites</button>
               </div>
             </div>
           </div>
@@ -29,5 +30,31 @@
       <% } %>
     </div>
   </div>
+  <!-- Include a JavaScript script -->
+  <script>
+    function addToFavorites(podcastId) {
+      // Make an HTTP POST request to add the podcast to favorites
+      fetch('/users/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpZCI6NSwiaWF0IjoxNjkwMDQyOTQ2LCJleHAiOjE2OTAwNDY1NDZ9.x6nS9Gk3LjnG5W15enMqYTSZwAqUDjq7nX53V_U2PE4', // Render the user JWT token
+        },
+        body: JSON.stringify({
+          user_id: 5, // Render the actual user ID
+          podcast_id: podcastId, // Pass the podcast ID from the function parameter
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the server if needed
+        console.log(data);
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the fetch request
+        console.error('Error adding podcast to favorites:', error);
+      });
+    }
+  </script>
 </body>
 </html>

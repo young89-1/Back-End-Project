@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const {
   fetchPodcastGenres,
-  fetchPodcast,
+  fetchPodcast, fetchPodcastById,
 } = require("../public/stylesheets/podcastService");
 const { User, favorites } = require("../models");
 const bcrypt = require("bcrypt");
@@ -115,12 +115,29 @@ router.get("/Profile", authCheck, async (req, res) => {
   try {
     const user_id = req.user.id;
     const favoritesList = await favorites.findAll({ where: { user_id: user_id } });
-    res.render("Profile", { title: "Favorites List", favoritesList: favoritesList });
+
+    // Fetch the podcast details for each favorite
+    const podcastDetailsPromises = favoritesList.map(async (favorite) => {
+      const podcastId = favorite.dataValues.podcast_id;
+      return await fetchPodcastById(podcastId);
+    });
+
+    const podcastDetails = await Promise.all(podcastDetailsPromises);
+
+    // Combine the favoritesList and podcastDetails into a single array
+    const combinedList = favoritesList.map((favorite, index) => ({
+      ...favorite.dataValues,
+      ...podcastDetails[index],
+    }));
+
+    res.render("Profile", { title: "Favorites List", favoritesList: combinedList });
   } catch (error) {
     console.error("Error retrieving Favorites List:", error);
     res.status(500).send("An error occurred while retrieving the Favorites List.");
   }
 });
+
+
 
 
 router.get("/", async (req, res)  => {
@@ -171,28 +188,6 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     res.status(500).send("An error occurred while retrieving the podcasts.");
   }
 });
-
-
-
-// To display the favorite's list on the profile page
-// router.get("/Profile", authCheck, async (req, res) => {
-//   try {
-//     const favoritesList = await favorites.findAll({
-//       where: { user_id: req.user.id },
-//     });
-
-//     res.render("Profile", { title: "Favorites List", favoritesList });
-//   } catch (error) {
-//     console.error("Error retrieving Favorites List:", error);
-//     res.status(500).send("An error occurred while retrieving the Favorites List.");
-//   }
-// });
-
-
-
-
-
-
 
 
 module.exports = router;

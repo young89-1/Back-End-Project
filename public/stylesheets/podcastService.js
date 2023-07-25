@@ -30,4 +30,15 @@ const fetchPodcast = async (title, genre) => {
   }
 };
 
-module.exports = { fetchPodcastGenres, fetchPodcast };
+const fetchPodcastById = async (id) => {
+  try {
+    const client = Client({ apiKey: api });
+    const response = await client.fetchPodcastById({ id });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching podcast by ID:', error);
+    throw error; // Rethrow the error to be handled by the caller
+  }
+};
+
+module.exports = { fetchPodcastGenres, fetchPodcast, fetchPodcastById };

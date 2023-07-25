@@ -1,17 +1,15 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const authCheck = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    res.redirect("/users/login");
-  } else {
-    try {
-      const decodedToken = jwt.verify(token, "secretToken");
-      req.user = decodedToken; 
-      next(); 
-    } catch (error) {
-  
-      res.redirect("/users/login");
+    let token = req.cookies.token
+    console.log("token", token)
+    console.log("Auth check middleware has fired");
+    let decoded = null;
+    try{
+        decoded = jwt.verify(token, 'secretToken');
+        console.log(decoded);
+    }   catch (error) {
+        console.log(error);
     }
   }
 };

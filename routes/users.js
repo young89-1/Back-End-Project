@@ -112,18 +112,16 @@ router.post("/delete/:id", async (req, res) => {
 
 // GET watch list page
 router.get("/Profile", authCheck, async (req, res) => {
-  res.render("Profile", { title: "Favorites List" });
   try {
-    const favoritesList = await favorites.findAll({
-      where: { user_id: 4 },
-    });
+    const user_id = req.user.id;
+    const favoritesList = await favorites.findAll({ where: { user_id: user_id } });
+    res.render("Profile", { title: "Favorites List", favoritesList: favoritesList });
   } catch (error) {
-    console.error("Error retreiving Favorites List:", error);
-    res
-    .status(500)
-    .send("An error occurred while retreiving the Favorites List.");
+    console.error("Error retrieving Favorites List:", error);
+    res.status(500).send("An error occurred while retrieving the Favorites List.");
   }
 });
+
 
 router.get("/", async (req, res)  => {
   try {
@@ -173,6 +171,27 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     res.status(500).send("An error occurred while retrieving the podcasts.");
   }
 });
+
+
+
+// To display the favorite's list on the profile page
+// router.get("/Profile", authCheck, async (req, res) => {
+//   try {
+//     const favoritesList = await favorites.findAll({
+//       where: { user_id: req.user.id },
+//     });
+
+//     res.render("Profile", { title: "Favorites List", favoritesList });
+//   } catch (error) {
+//     console.error("Error retrieving Favorites List:", error);
+//     res.status(500).send("An error occurred while retrieving the Favorites List.");
+//   }
+// });
+
+
+
+
+
 
 
 

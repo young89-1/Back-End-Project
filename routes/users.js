@@ -112,11 +112,12 @@ router.post("/delete/:id", async (req, res) => {
 
 // GET watch list page
 router.get("/Profile", authCheck, async (req, res) => {
-  res.render("Profile", { title: "Favorites List" });
+  const {user_id, podcast_id} = req.body
   try {
-    const favoritesList = await favorites.findAll({
-      where: { user_id: 4 },
-    });
+    const favoritesList = await favorites.findAll({where: {user_id: 4 }})
+    res.render("Profile", { title: "Favorites List", favoritesList: favoritesList });
+    console.log(favoritesList)
+
   } catch (error) {
     console.error("Error retreiving Favorites List:", error);
     res

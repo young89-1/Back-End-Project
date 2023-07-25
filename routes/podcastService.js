@@ -13,4 +13,17 @@ const fetchPodcastGenres = async () => {
   }
 };
 
-module.exports = { fetchPodcastGenres };
+const client = Client({ apiKey: 'bac9507b968e4f6bb25327dd6a9765fd' });
+client.fetchPodcastById({
+  id: '4d3fe717742d4963a85562e9f84d8c79',
+  next_episode_pub_date: 1479154463000,
+  sort: 'recent_first',
+}).then((response) => {
+  // Get response json data here
+  console.log(response.data);
+}).catch((error) => {
+  console.log(error)
+});
+
+module.exports = { fetchPodcastGenres, 
+  fetchPodcastById };

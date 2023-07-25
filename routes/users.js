@@ -26,21 +26,19 @@ router.get("/register", function (req, res) {
 
 router.post("/register", async (req, res) => {
   const { firstName, lastName, username, email, password } = req.body;
-  const newUser = await User.create({
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-  });
-
   try {
     const existingUser = await User.findOne({ where: { username } });
     console.log("existingUser", existingUser);
     if (existingUser) {
       return res.status(400).send("Username already taken.");
     }
-
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+    });
     res.redirect("/users/login");
   } catch (error) {
     console.error("Error creating user:", error);

@@ -6,11 +6,30 @@
   <% include partials/bootstrap.ejs %>
   <link rel="stylesheet" href="/stylesheets/style.css" />
 </head>
-<body>
-  <div class="container">
+<body class="bg-light">
+  <div class="container text-center">
     <% include partials/header.ejs %>
-    <h1 class="text-center mt-5"><%= title %></h1>
-    
+    <h2 class="text-center mt-5"><%= title %></h2>
+    <div class="row">
+      <% if (favoritesList && favoritesList.length > 0) { %>
+        <% favoritesList.forEach(favorite => { %>
+          <div class="col-md-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <h5 class="card-title"><%= favorite.podcast_id %></h5>
+                <img src="<%= favorite.image %>" class="img-fluid">
+                <audio controls>
+                  <source src="<%= favorite.audio %>" />
+                </audio>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+        
+      <% } else { %>
+        <p>No favorites yet!</p>
+      <% } %>
+    </div>
   </div>
 </body>
 </html>

@@ -2,8 +2,9 @@ var express = require("express");
 var router = express.Router();
 const {
   fetchPodcastGenres,
-  fetchPodcast,
-} = require("../public/stylesheets/podcastService");
+  fetchPodcast, 
+  fetchFavorites,
+} = require("./podcastService");
 const { User, favorites } = require("../models");
 const bcrypt = require("bcrypt");
 const saltrounds = 10;
@@ -17,8 +18,6 @@ const session = require("express-session");
 const sequelize = require("../config/database");
 
 // const passport = require("passport");
-
-
 
 router.get("/register", function (req, res) {
   res.render("register", { title: "Create Your Account" });
@@ -112,16 +111,24 @@ router.post("/delete/:id", async (req, res) => {
 router.get("/Profile", authCheck, async (req, res) => {
   try {
     const user_id = req.user.id;
-    const favoritesList = await favorites.findAll({ where: { user_id: user_id } });
-    res.render("Profile", { title: "Favorites List", favoritesList: favoritesList });
+    const favoritesList = await favorites.findAll({
+      where: { user_id: user_id },
+    });
+    const result = fetchFavorites(favoritesList)
+    console.log(result);
+    res.render("Profile", {
+      title: "Favorites List",
+      favoritesList: favoritesList,
+    });
   } catch (error) {
     console.error("Error retrieving Favorites List:", error);
-    res.status(500).send("An error occurred while retrieving the Favorites List.");
+    res
+      .status(500)
+      .send("An error occurred while retrieving the Favorites List.");
   }
 });
 
-
-router.get("/", async (req, res)  => {
+router.get("/", async (req, res) => {
   try {
     const genres = await fetchPodcastGenres();
 
@@ -132,29 +139,29 @@ router.get("/", async (req, res)  => {
   }
 });
 
-router.get('/test', async (req, res) => {
-  console.log('hello')
-})
+router.get("/test", async (req, res) => {
+  console.log("hello");
+});
 
-router.post('/test', authCheck, async (req, res) => {
-  console.log('hi', req)
-  const {user_id, podcast_id} = req.body
+router.post("/test", authCheck, async (req, res) => {
+  console.log("hi", req);
+  const { user_id, podcast_id } = req.body;
   // change =? (where jwt stored it)called id
-    // const user_id = 4;
-    // const podcast_id = '3648ca3b8df443a496f608830b4795bc';
-    try {
-      await favorites.create({
-        user_id: user_id,
-        podcast_id: podcast_id,
-      });
-  
-      console.log('Favorite record created successfully');
-      res.status(201).json({ message: 'Favorite record created successfully' });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
+  // const user_id = 4;
+  // const podcast_id = '3648ca3b8df443a496f608830b4795bc';
+  try {
+    await favorites.create({
+      user_id: user_id,
+      podcast_id: podcast_id,
+    });
+
+    console.log("Favorite record created successfully");
+    res.status(201).json({ message: "Favorite record created successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.get("/podcast/:genreName/:genreId", async (req, res) => {
   try {
@@ -169,7 +176,5 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     res.status(500).send("An error occurred while retrieving the podcasts.");
   }
 });
-
-
 
 module.exports = router;

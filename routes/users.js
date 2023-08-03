@@ -2,9 +2,9 @@ var express = require("express");
 var router = express.Router();
 const {
   fetchPodcastGenres,
-  fetchPodcast, 
-  fetchFavorites,
-} = require("./podcastService");
+  fetchPodcast,
+} = require("../routes/podcastService");
+
 const { User, favorites } = require("../models");
 const bcrypt = require("bcrypt");
 const saltrounds = 10;
@@ -16,8 +16,6 @@ const client = Client({ apiKey: api });
 const authCheck = require("../middleware/authCheck");
 const session = require("express-session");
 const sequelize = require("../config/database");
-
-// const passport = require("passport");
 
 router.get("/register", function (req, res) {
   res.render("register", { title: "Create Your Account" });
@@ -62,9 +60,7 @@ router.post("/login", async (req, res) => {
       console.log(result);
 
       if (result) {
-        const token = jwt.sign({ foo: "bar", id: user.id }, "secretToken", {
-          expiresIn: "1h",
-        });
+        const token = jwt.sign({ username: user.username, id: user.id }, "secretToken" );
         console.log(token);
         res.cookie("token", token);
         res.redirect("/users/profile");
@@ -91,7 +87,7 @@ router.get("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   const { firstName, lastName, email } = await User.findByPk(req.params.id);
-  console.log(firstName);
+  //console.log(firstName);
   res.render("delete", {
     title: "Delete User",
     id,
@@ -107,7 +103,6 @@ router.post("/delete/:id", async (req, res) => {
   res.send("Patch request delete user");
 });
 
-// GET watch list page
 router.get("/Profile", authCheck, async (req, res) => {
   try {
     const user_id = req.user.id;
@@ -128,6 +123,7 @@ router.get("/Profile", authCheck, async (req, res) => {
   }
 });
 
+
 router.get("/", async (req, res) => {
   try {
     const genres = await fetchPodcastGenres();
@@ -139,29 +135,30 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/test", async (req, res) => {
-  console.log("hello");
-});
+router.get('/test', async (req, res) => {
+  //console.log('hello')
+})
 
-router.post("/test", authCheck, async (req, res) => {
-  console.log("hi", req);
-  const { user_id, podcast_id } = req.body;
-  // change =? (where jwt stored it)called id
-  // const user_id = 4;
-  // const podcast_id = '3648ca3b8df443a496f608830b4795bc';
-  try {
-    await favorites.create({
-      user_id: user_id,
-      podcast_id: podcast_id,
-    });
-
-    console.log("Favorite record created successfully");
-    res.status(201).json({ message: "Favorite record created successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.post('/test', authCheck, async (req, res) => {
+  let {user_id, podcast_id, podcast_title, podcast_image, podcast_audio} = req.body
+  console.log(podcast_audio)
+  //user_id = parseInt(user_id)
+    try {
+      await favorites.create({
+        user_id: user_id,
+        podcast_id: podcast_id,
+        podcast_title: podcast_title,
+        podcast_image: podcast_image,
+        podcast_audio: podcast_audio
+      });
+  
+      console.log('Favorite record created successfully');
+      res.status(201).json({ message: 'Favorite record created successfully' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 router.get("/podcast/:genreName/:genreId", async (req, res) => {
   try {
@@ -169,8 +166,15 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     const genreId = req.params.genreId;
     const podcasts = await fetchPodcast(genreName, genreId);
     const title = podcasts.title_original;
-
-    res.render("podcast", { title: title, podcasts: podcasts });
+    const token = req.cookies.token;
+    let user_id;
+  if (token) {
+    const decodedToken = jwt.verify(token, "secretToken");
+    user_id = decodedToken.id
+  } else {
+    user_id = null
+  }
+    res.render("podcast", { title: title, podcasts: podcasts, user_id: user_id});
   } catch (error) {
     console.error("Error retrieving podcasts:", error);
     res.status(500).send("An error occurred while retrieving the podcasts.");

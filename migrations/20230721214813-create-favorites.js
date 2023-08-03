@@ -20,6 +20,16 @@ module.exports = {
       podcast_id: {
         type: Sequelize.STRING
       },
+      podcast_title: {
+        type: Sequelize.STRING
+      },
+      podcast_image: {
+        type: Sequelize.STRING
+      },
+      podcast_audio: {
+        type: Sequelize.STRING
+      },
+      
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE

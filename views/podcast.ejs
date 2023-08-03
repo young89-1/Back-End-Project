@@ -22,7 +22,7 @@
                   <source src=<%= podcast.audio %> />
                 </audio>
                 <!-- Add the "Add to Favorites" button with an onclick event -->
-                <button class="btn btn-danger" onclick="addToFavorites('<%= podcast.id %>')">Add to Favorites</button>
+                <button class="btn btn-danger" onclick="addToFavorites('<%= user_id %>', '<%= podcast.id %>', '<%= podcast.title_original %>', '<%= podcast.image %>', '<%= podcast.audio %>')">Add to Favorites</button>
               </div>
             </div>
           </div>
@@ -30,30 +30,31 @@
       <% } %>
     </div>
   </div>
-  <!-- Include a JavaScript script -->
   <script>
-    function addToFavorites(podcastId) {
-      // Make an HTTP POST request to add the podcast to favorites
+    function addToFavorites(user_id, podcastId, podcasttitle, podcastimage, podcastaudio) {
+      if (user_id) {
       fetch('/users/test', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpZCI6NSwiaWF0IjoxNjkwMDQyOTQ2LCJleHAiOjE2OTAwNDY1NDZ9.x6nS9Gk3LjnG5W15enMqYTSZwAqUDjq7nX53V_U2PE4', // Render the user JWT token
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          user_id: 5, // Render the actual user ID
-          podcast_id: podcastId, // Pass the podcast ID from the function parameter
+          user_id: user_id, 
+          podcast_id: podcastId, 
+          podcast_title: podcasttitle,
+          podcast_image: podcastimage,
+          podcast_audio: podcastaudio
         }),
       })
       .then(response => response.json())
       .then(data => {
-        // Handle the response from the server if needed
-        console.log(data);
       })
       .catch(error => {
-        // Handle any errors that occurred during the fetch request
         console.error('Error adding podcast to favorites:', error);
       });
+    } else {
+      window.location.href = "http://localhost:3000/users/login" //To Do 
+    }
     }
   </script>
 </body>

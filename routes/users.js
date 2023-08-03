@@ -16,10 +16,6 @@ const authCheck = require("../middleware/authCheck");
 const session = require("express-session");
 const sequelize = require("../config/database");
 
-// const passport = require("passport");
-
-
-
 router.get("/register", function (req, res) {
   res.render("register", { title: "Create Your Account" });
 });
@@ -63,7 +59,7 @@ router.post("/login", async (req, res) => {
       console.log(result);
 
       if (result) {
-        const token = jwt.sign({ foo: "bar", id: user.id }, "secretToken" );
+        const token = jwt.sign({ username: user.username, id: user.id }, "secretToken" );
         console.log(token);
         res.cookie("token", token);
         res.redirect("/users/profile");
@@ -106,7 +102,6 @@ router.post("/delete/:id", async (req, res) => {
   res.send("Patch request delete user");
 });
 
-// GET watch list page
 router.get("/Profile", authCheck, async (req, res) => {
   try {
     const user_id = req.user.id;
@@ -117,7 +112,6 @@ router.get("/Profile", authCheck, async (req, res) => {
     res.status(500).send("An error occurred while retrieving the Favorites List.");
   }
 });
-
 
 router.get("/", async (req, res)  => {
   try {
@@ -135,8 +129,9 @@ router.get('/test', async (req, res) => {
 })
 
 router.post('/test', authCheck, async (req, res) => {
-  console.log('hi', req)
-  const {user_id, podcast_id, podcast_title, podcast_image, podcast_audio} = req.body
+  let {user_id, podcast_id, podcast_title, podcast_image, podcast_audio} = req.body
+  console.log(podcast_audio)
+  //user_id = parseInt(user_id)
     try {
       await favorites.create({
         user_id: user_id,
@@ -160,14 +155,17 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     const genreId = req.params.genreId;
     const podcasts = await fetchPodcast(genreName, genreId);
     const title = podcasts.title_original;
-    // console.log(decodedToken)
-    // const decodedToken = jwt.verify(token, "secretToken");
-    // req.user = decodedToken;
-    //see if the jwt exists (is the user logged in ), if so decode token and set to user_id, else set user_id to null
-
-    res.render("podcast", { title: title, podcasts: podcasts});
+    const token = req.cookies.token;
+    let user_id;
+  if (token) {
+    const decodedToken = jwt.verify(token, "secretToken");
+    user_id = decodedToken.id
+  } else {
+    user_id = null
+  }
+    res.render("podcast", { title: title, podcasts: podcasts, user_id: user_id});
   } catch (error) {
-    //console.error("Error retrieving podcasts:", error);
+    console.error("Error retrieving podcasts:", error);
     res.status(500).send("An error occurred while retrieving the podcasts.");
   }
 });

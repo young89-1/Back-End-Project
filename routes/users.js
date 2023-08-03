@@ -4,6 +4,7 @@ const {
   fetchPodcastGenres,
   fetchPodcast,
 } = require("../routes/podcastService");
+
 const { User, favorites } = require("../models");
 const bcrypt = require("bcrypt");
 const saltrounds = 10;
@@ -105,15 +106,25 @@ router.post("/delete/:id", async (req, res) => {
 router.get("/Profile", authCheck, async (req, res) => {
   try {
     const user_id = req.user.id;
-    const favoritesList = await favorites.findAll({ where: { user_id: user_id } });
-    res.render("Profile", { title: "Favorites List", favoritesList: favoritesList });
+    const favoritesList = await favorites.findAll({
+      where: { user_id: user_id },
+    });
+    const result = fetchFavorites(favoritesList)
+    console.log(result);
+    res.render("Profile", {
+      title: "Favorites List",
+      favoritesList: favoritesList,
+    });
   } catch (error) {
     console.error("Error retrieving Favorites List:", error);
-    res.status(500).send("An error occurred while retrieving the Favorites List.");
+    res
+      .status(500)
+      .send("An error occurred while retrieving the Favorites List.");
   }
 });
 
-router.get("/", async (req, res)  => {
+
+router.get("/", async (req, res) => {
   try {
     const genres = await fetchPodcastGenres();
 
@@ -169,7 +180,5 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     res.status(500).send("An error occurred while retrieving the podcasts.");
   }
 });
-
-
 
 module.exports = router;

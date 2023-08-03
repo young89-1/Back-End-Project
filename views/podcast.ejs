@@ -22,7 +22,7 @@
                   <source src=<%= podcast.audio %> />
                 </audio>
                 <!-- Add the "Add to Favorites" button with an onclick event -->
-                <button class="btn btn-danger" onclick="addToFavorites('<%= podcast.id %>')">Add to Favorites</button>
+                <button class="btn btn-danger" onclick="addToFavorites('<%= podcast.id %>', '<%= podcast.title_original %>', '<%= podcast.image %>', '<%= podcast.audio %>')">Add to Favorites</button>
               </div>
             </div>
           </div>
@@ -32,17 +32,20 @@
   </div>
   <!-- Include a JavaScript script -->
   <script>
-    function addToFavorites(podcastId) {
+    function addToFavorites(podcastId, podcasttitle, podcastimage, podcastaudio) {
       // Make an HTTP POST request to add the podcast to favorites
+      console.log("view", podcastId, podcasttitle, podcastimage, podcastaudio)
       fetch('/users/test', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpZCI6NSwiaWF0IjoxNjkwMDQyOTQ2LCJleHAiOjE2OTAwNDY1NDZ9.x6nS9Gk3LjnG5W15enMqYTSZwAqUDjq7nX53V_U2PE4', // Render the user JWT token
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          user_id: 5, // Render the actual user ID
+          user_id: 4, // Render the actual user ID
           podcast_id: podcastId, // Pass the podcast ID from the function parameter
+          podcast_title: podcasttitle,
+          podcast_image: podcastimage,
+          podcast_audio: podcastaudio
         }),
       })
       .then(response => response.json())

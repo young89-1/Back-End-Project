@@ -3,7 +3,7 @@ var router = express.Router();
 const {
   fetchPodcastGenres,
   fetchPodcast,
-} = require("../public/stylesheets/podcastService");
+} = require("../routes/podcastService");
 const { User, favorites } = require("../models");
 const bcrypt = require("bcrypt");
 const saltrounds = 10;
@@ -63,9 +63,7 @@ router.post("/login", async (req, res) => {
       console.log(result);
 
       if (result) {
-        const token = jwt.sign({ foo: "bar", id: user.id }, "secretToken", {
-          expiresIn: "1h",
-        });
+        const token = jwt.sign({ foo: "bar", id: user.id }, "secretToken" );
         console.log(token);
         res.cookie("token", token);
         res.redirect("/users/profile");
@@ -92,7 +90,7 @@ router.get("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   const { firstName, lastName, email } = await User.findByPk(req.params.id);
-  console.log(firstName);
+  //console.log(firstName);
   res.render("delete", {
     title: "Delete User",
     id,
@@ -133,19 +131,19 @@ router.get("/", async (req, res)  => {
 });
 
 router.get('/test', async (req, res) => {
-  console.log('hello')
+  //console.log('hello')
 })
 
 router.post('/test', authCheck, async (req, res) => {
   console.log('hi', req)
-  const {user_id, podcast_id} = req.body
-  // change =? (where jwt stored it)called id
-    // const user_id = 4;
-    // const podcast_id = '3648ca3b8df443a496f608830b4795bc';
+  const {user_id, podcast_id, podcast_title, podcast_image, podcast_audio} = req.body
     try {
       await favorites.create({
         user_id: user_id,
         podcast_id: podcast_id,
+        podcast_title: podcast_title,
+        podcast_image: podcast_image,
+        podcast_audio: podcast_audio
       });
   
       console.log('Favorite record created successfully');
@@ -162,10 +160,14 @@ router.get("/podcast/:genreName/:genreId", async (req, res) => {
     const genreId = req.params.genreId;
     const podcasts = await fetchPodcast(genreName, genreId);
     const title = podcasts.title_original;
+    // console.log(decodedToken)
+    // const decodedToken = jwt.verify(token, "secretToken");
+    // req.user = decodedToken;
+    //see if the jwt exists (is the user logged in ), if so decode token and set to user_id, else set user_id to null
 
-    res.render("podcast", { title: title, podcasts: podcasts });
+    res.render("podcast", { title: title, podcasts: podcasts});
   } catch (error) {
-    console.error("Error retrieving podcasts:", error);
+    //console.error("Error retrieving podcasts:", error);
     res.status(500).send("An error occurred while retrieving the podcasts.");
   }
 });

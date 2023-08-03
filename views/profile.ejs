@@ -16,10 +16,10 @@
           <div class="col-md-4">
             <div class="card text-center">
               <div class="card-body">
-                <h5 class="card-title"><%= favorite.podcast_id %></h5>
-                <img src="<%= favorite.image %>" class="img-fluid">
+                <h5 class="card-title"><%= favorite.podcast_title %></h5>
+                <img src="<%= favorite.podcast_image %>" class="img-fluid">
                 <audio controls>
-                  <source src="<%= favorite.audio %>" />
+                  <source src="<%= favorite.podcast_audio %>" />
                 </audio>
               </div>
             </div>

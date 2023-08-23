@@ -109,8 +109,7 @@ router.get("/Profile", authCheck, async (req, res) => {
     const favoritesList = await favorites.findAll({
       where: { user_id: user_id },
     });
-    // const result = fetchFavorites(favoritesList)
-    // console.log(result);
+
     res.render("Profile", {
       title: "Favorites List",
       favoritesList: favoritesList,

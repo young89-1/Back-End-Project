@@ -61,7 +61,6 @@ router.post("/login", async (req, res) => {
 
       if (result) {
         const token = jwt.sign({ username: user.username, id: user.id }, "secretToken" );
-        console.log(token);
         res.cookie("token", token);
         res.redirect("/users/profile");
       } else res.render("login", { title: "Login", error: "Passwords do not match" });

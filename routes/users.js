@@ -36,7 +36,7 @@ router.post("/register", async (req, res) => {
       email,
       password,
     });
-    res.redirect("/users/login");
+    res.redirect("/login");
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).send("An error occurred while creating the user.");
@@ -62,7 +62,7 @@ router.post("/login", async (req, res) => {
       if (result) {
         const token = jwt.sign({ username: user.username, id: user.id }, "secretToken" );
         res.cookie("token", token);
-        res.redirect("/users/profile");
+        res.redirect("/profile");
       } else res.render("login", { title: "Login", error: "Passwords do not match" });
     });
   }
@@ -79,7 +79,7 @@ router.post("/edit/:id", async (req, res) => {
   const id = req.params.id;
   const { firstName, lastName, email } = req.body;
   await User.update({ firstName, lastName, email }, { where: { id: id } });
-  res.redirect(`/users/register`);
+  res.redirect(`/register`);
 });
 
 router.get("/delete/:id", async (req, res) => {

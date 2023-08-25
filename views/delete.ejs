@@ -7,7 +7,7 @@
   </head>
   <body class="bg-light">
     <h1><%= title %></h1>
-    <form action="/users/delete/<%= id %>" method="post">
+    <form action="/delete/<%= id %>" method="post">
         <input type="hidden" name="_method" value="PATCH">
         <label for="firstName">First Name:</label><br />
         <input type="text" id="firstName" name="firstName" value="<%= firstName %>" /><br />

@@ -103,14 +103,14 @@ router.post("/delete/:id", async (req, res) => {
   res.send("Patch request delete user");
 });
 
-router.get("/Profile", authCheck, async (req, res) => {
+router.get("/profile", authCheck, async (req, res) => {
   try {
     const user_id = req.user.id;
     const favoritesList = await favorites.findAll({
       where: { user_id: user_id },
     });
 
-    res.render("Profile", {
+    res.render("profile", {
       title: "Favorites List",
       favoritesList: favoritesList,
     });

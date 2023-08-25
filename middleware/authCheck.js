@@ -5,7 +5,7 @@ const authCheck = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
     // No token found, user is not authenticated
-    res.redirect("/users/login");
+    res.redirect("/login");
   } else {
     try {
       // Verify the JWT token and extract user data
@@ -14,7 +14,7 @@ const authCheck = (req, res, next) => {
       next(); // Proceed to the next middleware or route handler
     } catch (error) {
       // Token verification failed, user is not authenticated
-      res.redirect("/users/login");
+      res.redirect("/login");
     }
   }
 };
